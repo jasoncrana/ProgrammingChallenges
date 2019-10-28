@@ -1,0 +1,73 @@
+﻿@using ToDoList.Model
+@{
+
+  if (IsPost)
+  {
+    if (Request.Form["newTodo"] == "New Todo")
+    {
+      Todo t = new Todo();
+      t.item = Html.Encode(Request.Form["tfItem"].ToString());
+      switch (Html.Encode(Request.Form["ddDiff"].ToString()))
+      {
+        case "Easy": t.diff = 1; break;
+        case "Medium": t.diff = 2; break;
+        case "Hard": t.diff = 3; break;
+        case "Pffft! HA HA HA HA!": t.diff = 4; break;
+        default: t.diff = 0; break;
+      }
+      t.newItem();
+      Response.Redirect("/View/Todo.cshtml");
+    }
+  }
+
+  List<string> todoItems = new List<string>();
+  using (System.Data.SqlClient.SqlConnection con =
+    new System.Data.SqlClient.SqlConnection(
+      System.Configuration.ConfigurationManager.ConnectionStrings["tConn"].ToString()))
+  {
+    string q = "SELECT * FROM Todo ORDER by id";
+    System.Data.SqlClient.SqlCommand c = new System.Data.SqlClient.SqlCommand(q, con);
+    con.Open();
+    System.Data.SqlClient.SqlDataReader rows = c.ExecuteReader();
+    if (rows.HasRows)
+    {
+      while (rows.Read())
+      {
+        Todo todo = new Todo();
+        todo.item = rows["item"].ToString();
+        todo.done = (bool)rows["done"];
+        todo.diff = Convert.ToInt32(rows["difficulty"]);
+        todoItems.Add(todo.ToString());
+      }
+    }
+  }
+}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo List</title>
+</head>
+<body>
+  <form method="post">
+    <label for="tfItem">Todo</label>
+    <input type="text" name="tfItem" id="tfItem" />
+    <label for="ddDiff">Difficulty</label>
+    <input list="diffList" name="ddDiff" id="ddDiff" />
+    <input type="submit" name="newTodo" value="New Todo" />
+  </form>
+
+
+  <table>
+    <tbody>
+      @Html.Raw(string.Join("", todoItems))
+    </tbody>
+  </table>
+
+  <datalist id="diffList">
+    <option value="Easy" />
+    <option value="Medium" />
+    <option value="Hard" />
+    <option value="Pffft! HA HA HA HA!" />
+  </datalist>
+</body>
+</html>
