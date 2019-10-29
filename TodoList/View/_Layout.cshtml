@@ -1,0 +1,13 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>@Page.Title</title>
+  @RenderSection("head", required: false)
+  <link rel="stylesheet" href="~/styles/todo.css" />
+</head>
+<body>
+  <div class="content">
+    @RenderBody()
+  </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿body {
+  font: 16px 'Helvetica' #333;
+  background-color:bisque;
+  margin:0;
+  margin-top: -20px;
+}
+
+.content {
+  max-width: 1440px;
+  background-color:whitesmoke;
+  color:#333;
+  padding: 0 4px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  
+}
+
+label {
+  font-size:14px;
+  display:block;
+}
+
+.checklist {
+  overflow:scroll;
+  max-height: 80vh;
+}
+
+input[type="text"],
+input[list] {
+  width: 75%;
+}
+
+input[type="submit"] {
+  margin: 4px;
+}
+
+.row {
+  display:block;
+}
+
+.diff1 {
+  color:green;
+}
+
+.diff2 {
+  color: orange;
+}
+
+.diff3 {
+  color: darkred;
+}
+
+.diff4 {
+  color: rebeccapurple;
+}

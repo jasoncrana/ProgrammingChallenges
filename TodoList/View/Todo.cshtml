@@ -1,6 +1,8 @@
 ﻿@using ToDoList.Model
-@{
 
+@{
+  Page.Title = "Todo List";
+  Layout = "_Layout.cshtml";
   if (IsPost)
   {
     if (Request.Form["newTodo"] == "New Todo")
@@ -22,8 +24,8 @@
 
   List<string> todoItems = new List<string>();
   using (System.Data.SqlClient.SqlConnection con =
-    new System.Data.SqlClient.SqlConnection(
-      System.Configuration.ConfigurationManager.ConnectionStrings["tConn"].ToString()))
+  new System.Data.SqlClient.SqlConnection(
+  System.Configuration.ConfigurationManager.ConnectionStrings["tConn"].ToString()))
   {
     string q = "SELECT * FROM Todo ORDER by id";
     System.Data.SqlClient.SqlCommand c = new System.Data.SqlClient.SqlCommand(q, con);
@@ -42,32 +44,31 @@
     }
   }
 }
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Todo List</title>
-</head>
-<body>
-  <form method="post">
+<h1>Todo List</h1>
+<form method="post">
+  <div class="row">
     <label for="tfItem">Todo</label>
-    <input type="text" name="tfItem" id="tfItem" />
+    <input type="text" name="tfItem" id="tfItem" autofocus />
+  </div>
+  <div class="row">
     <label for="ddDiff">Difficulty</label>
     <input list="diffList" name="ddDiff" id="ddDiff" />
-    <input type="submit" name="newTodo" value="New Todo" />
-  </form>
+  </div>
+  <input type="submit" name="newTodo" value="New Todo" />
+</form>
 
-
+<div class="checklist">
   <table>
     <tbody>
       @Html.Raw(string.Join("", todoItems))
     </tbody>
   </table>
+</div>
 
-  <datalist id="diffList">
-    <option value="Easy" />
-    <option value="Medium" />
-    <option value="Hard" />
-    <option value="Pffft! HA HA HA HA!" />
-  </datalist>
-</body>
-</html>
+
+<datalist id="diffList">
+  <option value="Easy" />
+  <option value="Medium" />
+  <option value="Hard" />
+  <option value="Pffft! HA HA HA HA!" />
+</datalist>
