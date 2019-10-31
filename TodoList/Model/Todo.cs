@@ -47,6 +47,7 @@ namespace ToDoList.Model
         if (rows.HasRows) while (rows.Read())
           {
             item = rows["item"].ToString();
+            id = Convert.ToInt32(rows["id"]);
             done = (bool)rows["done"];
             diff = Convert.ToInt32(rows["difficulty"]);
             return true;
@@ -69,7 +70,7 @@ namespace ToDoList.Model
     {
       using (SqlConnection con = new SqlConnection(tConn))
       {
-        string q = $"Update Todo SET done=1 WHERE id={id}";
+        string q = $"Update Todo SET done='True' WHERE id={id}";
         SqlCommand c = new SqlCommand(q, con);
         con.Open();
         c.ExecuteNonQuery();

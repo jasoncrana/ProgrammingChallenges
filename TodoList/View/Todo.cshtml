@@ -1,11 +1,11 @@
 ﻿@using ToDoList.Model
-
 @{
   Page.Title = "Todo List";
   Layout = "_Layout.cshtml";
   if (IsPost)
   {
-    if (Request.Form["newTodo"] == "New Todo")
+    string act = Request.Form["newTodo"];
+    if (act == "New Todo")
     {
       Todo t = new Todo();
       t.item = Html.Encode(Request.Form["tfItem"].ToString());
@@ -18,6 +18,33 @@
         default: t.diff = 0; break;
       }
       t.newItem();
+      Response.Redirect("/View/Todo.cshtml");
+    }
+    if (act == "Update List")
+    {
+      using (System.Data.SqlClient.SqlConnection con =
+        new System.Data.SqlClient.SqlConnection(
+          System.Configuration.ConfigurationManager.ConnectionStrings["tConn"].ToString()))
+      {
+        string q = "SELECT id FROM Todo";
+        System.Data.SqlClient.SqlCommand c = new System.Data.SqlClient.SqlCommand(q, con);
+        con.Open();
+        System.Data.SqlClient.SqlDataReader rows = c.ExecuteReader();
+        if (rows.HasRows)
+        {
+          while (rows.Read())
+          {
+            int id = Convert.ToInt32(rows["id"]);
+            string check = $"cb{id.ToString()}";
+            if(Request.Form[check] == "on")
+            {
+              Todo t = new Todo();
+              t.id = id;
+              t.completeItem();
+            }
+          }
+        }
+      }
       Response.Redirect("/View/Todo.cshtml");
     }
   }
@@ -39,6 +66,7 @@
         todo.item = rows["item"].ToString();
         todo.done = (bool)rows["done"];
         todo.diff = Convert.ToInt32(rows["difficulty"]);
+        todo.id = Convert.ToInt32(rows["id"]);
         todoItems.Add(todo.ToString());
       }
     }
@@ -55,15 +83,16 @@
     <input list="diffList" name="ddDiff" id="ddDiff" />
   </div>
   <input type="submit" name="newTodo" value="New Todo" />
-</form>
+  <input type="submit" name="newTodo" value="Update List" />
 
-<div class="checklist">
-  <table>
-    <tbody>
-      @Html.Raw(string.Join("", todoItems))
-    </tbody>
-  </table>
-</div>
+  <div class="checklist">
+    <table>
+      <tbody>
+        @Html.Raw(string.Join("", todoItems))
+      </tbody>
+    </table>
+  </div>
+</form>
 
 
 <datalist id="diffList">
